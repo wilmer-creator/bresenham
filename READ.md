@@ -29,7 +29,7 @@ function bresenham(x0, y0, x1, y1, plot) {
         // Dibujar el punto actual
         plot(x0, y0);
 
-        // Condición de finalización
+        // Condición de finy
         if (x0 === x1 && y0 === y1) break;
 
         let e2 = 2 * err;
