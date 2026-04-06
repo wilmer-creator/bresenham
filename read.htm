@@ -71,12 +71,37 @@ function drawPoint(x, y) {
 }
 
 /**
- * Agrega una fila a la tabla
+ * Dibuja los ejes con escala numérica
+ */
+function drawAxes() {
+    ctx.beginPath();
+
+    // Eje Y (izquierda)
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, canvas.height);
+
+    // Eje X (abajo)
+    ctx.moveTo(0, canvas.height);
+    ctx.lineTo(canvas.width, canvas.height);
+
+    ctx.stroke();
+
+    // Escala eje X
+    for (let i = 0; i <= canvas.width / 20; i++) {
+        ctx.fillText(i, i * 20, canvas.height - 5);
+    }
+
+    // Escala eje Y
+    for (let i = 0; i <= canvas.height / 20; i++) {
+        ctx.fillText(i, 2, canvas.height - i * 20);
+    }
+}
+
+/**
+ * Agrega fila a la tabla
  */
 function addRow(step, x, y, err, e2) {
-    let table = document.getElementById("tabla");
-    let row = table.insertRow();
-
+    let row = document.getElementById("tabla").insertRow();
     row.insertCell(0).innerText = step;
     row.insertCell(1).innerText = x;
     row.insertCell(2).innerText = y;
@@ -85,7 +110,7 @@ function addRow(step, x, y, err, e2) {
 }
 
 /**
- * Algoritmo de Bresenham con registro de pasos
+ * Algoritmo de Bresenham con registro
  */
 function bresenham(x0, y0, x1, y1, plot) {
     let dx = Math.abs(x1 - x0);
@@ -97,25 +122,18 @@ function bresenham(x0, y0, x1, y1, plot) {
     let step = 0;
 
     while (true) {
-
-        // Dibujar punto
         plot(x0, y0);
 
         let e2 = 2 * err;
-
-        // Guardar datos en tabla
         addRow(step, x0, y0, err, e2);
 
-        // Condición de fin
         if (x0 === x1 && y0 === y1) break;
 
-        // Movimiento en X
         if (e2 > -dy) {
             err -= dy;
             x0 += sx;
         }
 
-        // Movimiento en Y
         if (e2 < dx) {
             err += dx;
             y0 += sy;
@@ -137,8 +155,14 @@ function dibujar() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // NUEVO: dibujar ejes primero
+    drawAxes();
+
     bresenham(x0, y0, x1, y1, drawPoint);
 }
+
+// Mostrar ejes al cargar
+drawAxes();
 
 </script>
 
