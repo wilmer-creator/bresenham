@@ -15,14 +15,22 @@ cambios invalidarán el trabajo con notas de cero.</b>
 <title>Bresenham</title>
 
 <style>
+    body {
+        font-family: Arial;
+    }
+
     canvas {
         border: 1px solid black;
         margin-top: 10px;
     }
 
-    table, th, td {
-        border: 1px solid black;
+    table {
         border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        border: 1px solid black;
         padding: 5px;
         text-align: center;
     }
@@ -34,10 +42,10 @@ cambios invalidarán el trabajo con notas de cero.</b>
 <h2>Algoritmo de Bresenham</h2>
 
 <!-- Inputs -->
-X0: <input type="number" id="x0">
-Y0: <input type="number" id="y0">
-X1: <input type="number" id="x1">
-Y1: <input type="number" id="y1">
+X0: <input type="number" id="x0" value="2">
+Y0: <input type="number" id="y0" value="2">
+X1: <input type="number" id="x1" value="15">
+Y1: <input type="number" id="y1" value="10">
 
 <button onclick="dibujar()">Dibujar</button>
 
@@ -63,11 +71,13 @@ Y1: <input type="number" id="y1">
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+const scale = 20;
+
 /**
- * Dibuja un punto en el canvas
+ * Dibuja un punto en el canvas ajustado a escala
  */
 function drawPoint(x, y) {
-    ctx.fillRect(x, y, 3, 3);
+    ctx.fillRect(x * scale, canvas.height - y * scale, 4, 4);
 }
 
 /**
@@ -76,29 +86,29 @@ function drawPoint(x, y) {
 function drawAxes() {
     ctx.beginPath();
 
-    // Eje Y (izquierda)
+    // Eje Y
     ctx.moveTo(0, 0);
     ctx.lineTo(0, canvas.height);
 
-    // Eje X (abajo)
+    // Eje X
     ctx.moveTo(0, canvas.height);
     ctx.lineTo(canvas.width, canvas.height);
 
     ctx.stroke();
 
     // Escala eje X
-    for (let i = 0; i <= canvas.width / 20; i++) {
-        ctx.fillText(i, i * 20, canvas.height - 5);
+    for (let i = 0; i <= canvas.width / scale; i++) {
+        ctx.fillText(i, i * scale, canvas.height - 5);
     }
 
     // Escala eje Y
-    for (let i = 0; i <= canvas.height / 20; i++) {
-        ctx.fillText(i, 2, canvas.height - i * 20);
+    for (let i = 0; i <= canvas.height / scale; i++) {
+        ctx.fillText(i, 2, canvas.height - i * scale);
     }
 }
 
 /**
- * Agrega fila a la tabla
+ * Agrega una fila a la tabla
  */
 function addRow(step, x, y, err, e2) {
     let row = document.getElementById("tabla").insertRow();
@@ -110,9 +120,24 @@ function addRow(step, x, y, err, e2) {
 }
 
 /**
- * Algoritmo de Bresenham con registro
+ * Limpia la tabla antes de dibujar
+ */
+function clearTable() {
+    document.getElementById("tabla").innerHTML = `
+    <tr>
+        <th>Paso</th>
+        <th>x</th>
+        <th>y</th>
+        <th>err</th>
+        <th>e2</th>
+    </tr>`;
+}
+
+/**
+ * Algoritmo de Bresenham con registro de pasos
  */
 function bresenham(x0, y0, x1, y1, plot) {
+
     let dx = Math.abs(x1 - x0);
     let dy = Math.abs(y1 - y0);
     let sx = (x0 < x1) ? 1 : -1;
@@ -122,18 +147,25 @@ function bresenham(x0, y0, x1, y1, plot) {
     let step = 0;
 
     while (true) {
+
+        // Dibujar punto
         plot(x0, y0);
 
         let e2 = 2 * err;
+
+        // Guardar en tabla
         addRow(step, x0, y0, err, e2);
 
+        // Fin
         if (x0 === x1 && y0 === y1) break;
 
+        // Movimiento en X
         if (e2 > -dy) {
             err -= dy;
             x0 += sx;
         }
 
+        // Movimiento en Y
         if (e2 < dx) {
             err += dx;
             y0 += sy;
@@ -153,15 +185,18 @@ function dibujar() {
     let x1 = parseInt(document.getElementById("x1").value);
     let y1 = parseInt(document.getElementById("y1").value);
 
+    // Limpiar todo
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    clearTable();
 
-    // NUEVO: dibujar ejes primero
+    // Dibujar ejes
     drawAxes();
 
+    // Dibujar línea
     bresenham(x0, y0, x1, y1, drawPoint);
 }
 
-// Mostrar ejes al cargar
+// Inicializar ejes
 drawAxes();
 
 </script>
