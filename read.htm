@@ -32,8 +32,15 @@ Y1: <input type="number" id="y1">
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+/**
+ * Dibuja un punto en el canvas
+ */
+function drawPoint(x, y) {
+    ctx.fillRect(x, y, 3, 3)
+}
+
 function dibujar() {
-    console.log("Pendiente implementar");
+    drawPoint(50, 50);
 }
 </script>
 
