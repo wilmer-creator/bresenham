@@ -48,7 +48,7 @@ Y1: <input type="number" id="y1">
 
 <h3>Tabla de iteraciones</h3>
 
-<!-- TABLA (NUEVO) -->
+<!-- Tabla -->
 <table id="tabla">
 <tr>
 <th>Paso</th>
@@ -65,20 +65,27 @@ const ctx = canvas.getContext("2d");
 
 /**
  * Dibuja un punto en el canvas
- * @param {number} x - Coordenada X
- * @param {number} y - Coordenada Y
  */
 function drawPoint(x, y) {
     ctx.fillRect(x, y, 3, 3);
 }
 
 /**
- * Implementación del algoritmo de Bresenham
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {Function} plot
+ * Agrega una fila a la tabla
+ */
+function addRow(step, x, y, err, e2) {
+    let table = document.getElementById("tabla");
+    let row = table.insertRow();
+
+    row.insertCell(0).innerText = step;
+    row.insertCell(1).innerText = x;
+    row.insertCell(2).innerText = y;
+    row.insertCell(3).innerText = err;
+    row.insertCell(4).innerText = e2;
+}
+
+/**
+ * Algoritmo de Bresenham con registro de pasos
  */
 function bresenham(x0, y0, x1, y1, plot) {
     let dx = Math.abs(x1 - x0);
@@ -87,22 +94,34 @@ function bresenham(x0, y0, x1, y1, plot) {
     let sy = (y0 < y1) ? 1 : -1;
     let err = dx - dy;
 
-    while (true) {
-        plot(x0, y0);
+    let step = 0;
 
-        if (x0 === x1 && y0 === y1) break;
+    while (true) {
+
+        // Dibujar punto
+        plot(x0, y0);
 
         let e2 = 2 * err;
 
+        // Guardar datos en tabla
+        addRow(step, x0, y0, err, e2);
+
+        // Condición de fin
+        if (x0 === x1 && y0 === y1) break;
+
+        // Movimiento en X
         if (e2 > -dy) {
             err -= dy;
             x0 += sx;
         }
 
+        // Movimiento en Y
         if (e2 < dx) {
             err += dx;
             y0 += sy;
         }
+
+        step++;
     }
 }
 
