@@ -13,6 +13,21 @@ cambios invalidarán el trabajo con notas de cero.</b>
 <head>
 <meta charset="UTF-8">
 <title>Bresenham</title>
+
+<style>
+    canvas {
+        border: 1px solid black;
+        margin-top: 10px;
+    }
+
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
+
 </head>
 <body>
 
@@ -29,7 +44,20 @@ Y1: <input type="number" id="y1">
 <br><br>
 
 <!-- Canvas -->
-<canvas id="canvas" width="400" height="400" style="border:1px solid black;"></canvas>
+<canvas id="canvas" width="400" height="400"></canvas>
+
+<h3>Tabla de iteraciones</h3>
+
+<!-- TABLA (NUEVO) -->
+<table id="tabla">
+<tr>
+<th>Paso</th>
+<th>x</th>
+<th>y</th>
+<th>err</th>
+<th>e2</th>
+</tr>
+</table>
 
 <script>
 const canvas = document.getElementById("canvas");
@@ -80,7 +108,6 @@ function bresenham(x0, y0, x1, y1, plot) {
 
 /**
  * Función principal
- * Lee datos desde los inputs y dibuja la línea
  */
 function dibujar() {
 
@@ -89,12 +116,11 @@ function dibujar() {
     let x1 = parseInt(document.getElementById("x1").value);
     let y1 = parseInt(document.getElementById("y1").value);
 
-    // Limpiar canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Dibujar línea con Bresenham
-    bresenham(x0, y0, x1, y1, drawPoint)
+    bresenham(x0, y0, x1, y1, drawPoint);
 }
+
 </script>
 
 </body>
